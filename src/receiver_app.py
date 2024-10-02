@@ -7,7 +7,7 @@ from popup import Popup
 from receiver import Receiver
 
 
-class MainApp(QApplication):
+class ReceiverApp(QApplication):
     def __init__(self):
         super().__init__(sys.argv)
         
@@ -30,5 +30,5 @@ class MainApp(QApplication):
 
 
 if __name__ == "__main__":
-    app = MainApp()
+    app = ReceiverApp()
     app.exec()
