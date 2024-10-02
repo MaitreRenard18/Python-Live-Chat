@@ -1,51 +1,33 @@
 import socket
-import sys
-from threading import Thread
-from time import sleep
 
-from PyQt5.QtCore import QByteArray
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication
-
-from popup import Popup
-
-_popup: Popup = None
+from PyQt5.QtCore import QThread, pyqtSignal
 
 
-def receive(port: int = 5555) -> None:
-    addr = ("0.0.0.0", port)
+class Receiver(QThread):
+    image_received = pyqtSignal(bytes)  # Ensure this is 'bytes'
 
-    server = socket.socket(type=socket.SOCK_DGRAM)
-    server.bind(addr)
+    def __init__(self, port: int = 5555) -> None:
+        super().__init__()
 
-    print("En attente d'image")
-    while ...:
-        image_chunk, _addr = server.recvfrom(2048)
+        self.addr = ("0.0.0.0", port)
+        self.server = socket.socket(type=socket.SOCK_DGRAM)
+        self.server.bind(self.addr)
 
-        if not image_chunk:
-            continue
+    def run(self) -> None:
+        print("En attente d'image")
+        while True:  # Replace ... with True to keep running
+            image_chunk, _addr = self.server.recvfrom(2048)
 
-        print("Debut du téléchargement de l'image...")
+            if not image_chunk:
+                continue
 
-        data = b""
-        while image_chunk and image_chunk != b'END':
-            data += image_chunk
-            image_chunk = server.recv(2048)
+            print("Debut du téléchargement de l'image...")
 
-        print("Téléchargement de l'image fini.")
+            data = b""
+            while image_chunk and image_chunk != b'END':
+                data += image_chunk
+                image_chunk = self.server.recv(2048)
 
-        # Affiche le popup
-        _popup.set_image(data)
-        _popup.show()
+            print("Téléchargement de l'image fini.")
 
-    server.close()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    _popup = Popup()
-    
-    receive_thread = Thread(target=receive)
-    receive_thread.start()
-    
-    app.exec()
+            self.image_received.emit(data)  # Emit the bytes data
