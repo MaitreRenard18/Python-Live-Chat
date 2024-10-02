@@ -4,7 +4,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 
 class Receiver(QThread):
-    image_received = pyqtSignal(bytes)  # Ensure this is 'bytes'
+    image_received = pyqtSignal(bytes, float)  # Ensure this is 'bytes'
 
     def __init__(self, port: int = 5555) -> None:
         super().__init__()
@@ -14,9 +14,9 @@ class Receiver(QThread):
         self.server.bind(self.addr)
 
     def run(self) -> None:
-        print("En attente d'image")
-        while True:  # Replace ... with True to keep running
-            image_chunk, _addr = self.server.recvfrom(2048)
+        print("En attente d'image...")
+        while ...:
+            image_chunk, current_addr = self.server.recvfrom(2048)
 
             if not image_chunk:
                 continue
@@ -24,10 +24,14 @@ class Receiver(QThread):
             print("Debut du téléchargement de l'image...")
 
             data = b""
-            while image_chunk and image_chunk != b'END':
+            while image_chunk and image_chunk != b'IMAGE_END':
                 data += image_chunk
-                image_chunk = self.server.recv(2048)
+                new_image_chunk, addr = self.server.recvfrom(2048)
+                
+                if addr == current_addr:
+                    image_chunk = new_image_chunk
 
             print("Téléchargement de l'image fini.")
 
-            self.image_received.emit(data)  # Emit the bytes data
+            duration = float(self.server.recv(2048).decode())
+            self.image_received.emit(data, duration)

@@ -17,13 +17,13 @@ class ReceiverApp(QApplication):
         self.receiver.image_received.connect(self.show_popup)
         self.receiver.start()
 
-    def show_popup(self, image_data: bytes) -> None:
-        print("Affichage de la popup")
+    def show_popup(self, image_data: bytes, duration: float) -> None:
+        print("Affichage de la popup...")
         self.popup.set_image(image_data)
         self.popup.show()
         
         loop = QEventLoop()
-        QTimer.singleShot(5000, loop.quit) # 5000 ms = 5s
+        QTimer.singleShot(int(1000 * duration), loop.quit) # 1000 ms = 1s
         loop.exec()
         
         self.popup.hide()
