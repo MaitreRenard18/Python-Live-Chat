@@ -38,15 +38,3 @@ class Popup(QWidget):
             return
         
         self.label.setPixmap(image)
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    with open("img/dalaigre.jpg", "rb") as file:
-        image_data = file.read()
-        print(image_data)
-        popup = Popup(image_data)
-        popup.show()
-
-    app.exec_()
