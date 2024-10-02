@@ -1,4 +1,3 @@
-import sys
 from pathlib import Path
 
 import PyQt5
@@ -14,7 +13,7 @@ class Popup(QWidget):
         # Window settings
         self.setWindowFlag(PyQt5.QtCore.Qt.FramelessWindowHint)
         self.setWindowFlag(PyQt5.QtCore.Qt.WindowStaysOnTopHint)
-        # self.setAttribute(PyQt5.QtCore.Qt.WA_TranslucentBackground) # TODO : uncomment this line to make the window transparent
+        self.setAttribute(PyQt5.QtCore.Qt.WA_TranslucentBackground)
 
         # Image
         self.label = QLabel(self)
