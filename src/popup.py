@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QLabel, QWidget
 
 
 class Popup(QWidget):
-    def __init__(self, image_data: bytes | None = None) -> None:
+    def __init__(self, image_data: bytes) -> None:
         super().__init__()
 
         # Window settings
@@ -19,21 +19,16 @@ class Popup(QWidget):
         self.label = QLabel(self)
         self.label.setScaledContents(True)
         
-        if image_data:
-            self.set_image(image_data)
+        image = QPixmap()
+        err = image.loadFromData(image_data)
+        
+        if not err:
+            print("Erreur lors du chargement de l'image")
+        
+        self.label.setPixmap(image)
 
         # Resize window
         screen_size = (0, 0, PyQt5.QtWidgets.QDesktopWidget().screenGeometry().width(), PyQt5.QtWidgets.QDesktopWidget().screenGeometry().height()) 
 
         self.setGeometry(*screen_size)
         self.label.setGeometry(*screen_size)
-        
-    def set_image(self, image_data: bytes) -> None:
-        image = QPixmap()
-        err = image.loadFromData(image_data)
-        
-        if not err:
-            print("Erreur lors du chargement de l'image")
-            return
-        
-        self.label.setPixmap(image)
