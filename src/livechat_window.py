@@ -106,6 +106,7 @@ class LiveChatWindow(QWidget):
         self.doubleSpinBox.setMaximum(1000.0)
         self.doubleSpinBox.setProperty("value", 5.0)
         self.doubleSpinBox.setObjectName("doubleSpinBox")
+        self.doubleSpinBox.setLocale(QtCore.QLocale(QtCore.QLocale.English))
         self.horizontalLayout.addWidget(self.doubleSpinBox)
         self.pushButton = QtWidgets.QPushButton(self.frame)
         self.pushButton.setMinimumSize(QtCore.QSize(16, 24))
