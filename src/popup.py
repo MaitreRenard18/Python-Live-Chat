@@ -23,7 +23,7 @@ class Popup(QWidget):
         err = image.loadFromData(image_data)
         
         if not err:
-            print("Erreur lors du chargement de l'image")
+            print("Error loading image.")
         
         self.label.setPixmap(image)
 

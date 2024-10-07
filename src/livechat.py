@@ -13,8 +13,7 @@ from .receiver import Receiver
 class LiveChat(QApplication):
     def __init__(self):
         super().__init__(sys.argv)
-        icon = QtGui.QIcon()
-        # set app icon    
+        
         app_icon = QtGui.QIcon('assets/icon.png')
         self.setWindowIcon(app_icon)
 

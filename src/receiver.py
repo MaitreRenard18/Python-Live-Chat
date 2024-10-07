@@ -37,7 +37,7 @@ class Receiver(QThread):
             with open(f"img/debug.png", "wb") as file:
                 file.write(data)
 
-            print("Téléchargement de l'image fini.")
+            print("Image received.")
 
             duration = float(self.server.recv(2048).decode())
             self.image_received.emit(data, duration)
