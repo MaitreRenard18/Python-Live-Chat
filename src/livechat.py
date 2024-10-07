@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QShortcut, QWidget
 from livechat_window import LiveChatWindow
 from popup import Popup
 from receiver import Receiver
-from sender import Sender
 
 
 class LiveChat(QApplication):
@@ -17,8 +16,6 @@ class LiveChat(QApplication):
         self.image_receiver = Receiver()
         self.image_receiver.image_received.connect(self.show_popup, Qt.QueuedConnection)
         self.image_receiver.start()
-        
-        self.image_sender = Sender()
         
         self.live_chat_sender = LiveChatWindow()
         self.live_chat_sender.show()
