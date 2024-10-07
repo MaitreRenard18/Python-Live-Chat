@@ -1,5 +1,6 @@
 import sys
 
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QEventLoop, Qt, QThread, QTimer
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QApplication, QFileDialog, QShortcut, QWidget
@@ -12,7 +13,11 @@ from receiver import Receiver
 class LiveChat(QApplication):
     def __init__(self):
         super().__init__(sys.argv)
-        
+        icon = QtGui.QIcon()
+        # set app icon    
+        app_icon = QtGui.QIcon('assets/icon.png')
+        self.setWindowIcon(app_icon)
+
         self.image_receiver = Receiver()
         self.image_receiver.image_received.connect(self.show_popup, Qt.QueuedConnection)
         self.image_receiver.start()
