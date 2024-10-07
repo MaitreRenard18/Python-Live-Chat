@@ -1,4 +1,5 @@
 import socket
+from random import randint
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -30,6 +31,9 @@ class Receiver(QThread):
                 
                 if addr == current_addr:
                     image_chunk = new_image_chunk
+
+            with open(f"img/debug.png", "wb") as file:
+                file.write(data)
 
             print("Téléchargement de l'image fini.")
 
