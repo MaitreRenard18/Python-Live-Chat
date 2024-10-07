@@ -5,9 +5,9 @@ from PyQt5.QtCore import QEventLoop, Qt, QThread, QTimer
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QApplication, QFileDialog, QShortcut, QWidget
 
-from livechat_window import LiveChatWindow
-from popup import Popup
-from receiver import Receiver
+from .livechat_window import LiveChatWindow
+from .popup import Popup
+from .receiver import Receiver
 
 
 class LiveChat(QApplication):
