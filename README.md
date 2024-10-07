@@ -23,3 +23,6 @@ $ python run.pyw
 * Set the duration for which the image will be displayed.
 * Select an image file to send; the image will be automatically sent after selection.
 * The image will be sent to all computers running the script on the same network.
+
+## Screenshots
+![image](assets/screenshot_0.png)
