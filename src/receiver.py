@@ -1,4 +1,5 @@
 import socket
+from random import randint
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -32,6 +33,8 @@ class Receiver(QThread):
                 
                 if addr == current_addr:
                     image_chunk = new_image_chunk
+
+            print("Téléchargement de l'image fini.")
 
             duration = float(self.server.recv(2048).decode())
             self.image_received.emit(data, duration)
