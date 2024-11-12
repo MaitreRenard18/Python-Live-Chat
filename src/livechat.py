@@ -21,14 +21,14 @@ class LiveChat(QApplication):
         self.setWindowIcon(app_icon)
 
         # Receiver
-        self.image_receiver = Receiver(port=5555)
+        self.image_receiver = Receiver()
         self.image_receiver.image_received.connect(self.show_popup, Qt.QueuedConnection)
         self.image_receiver.start()
         
         # Registry
         self.registry = {}
         
-        self.user_register = Register(port=5556)
+        self.user_register = Register()
         self.user_register.user_registered.connect(self.register_user, Qt.QueuedConnection)
         self.user_register.start()
         
