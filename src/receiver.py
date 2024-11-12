@@ -12,33 +12,28 @@ class Receiver(QThread):
 
         self.address = address
         self.port = port
-        self.addr = (self.address, self.port)
         
-        self.server = socket.socket(type=socket.SOCK_DGRAM)
-        self.server.bind(self.addr)
-        
-        print(f"Socket created with address {self.address} and port {self.port}.")
+        self.image_socket = socket.socket(type=socket.SOCK_STREAM)
+        self.image_socket.bind((self.address, self.port))
+        self.image_socket.listen(1)
     
     def run(self) -> None:
         while True:
-            image_chunk, current_addr = self.server.recvfrom(2048)
-
-            if not image_chunk:
-                continue
-
-            data = b""
+            client, _ = self.image_socket.accept()
+            data = b''
+            
+            image_chunk = client.recv(2048)
             while image_chunk and image_chunk != b'IMAGE_END':
                 data += image_chunk
-                new_image_chunk, addr = self.server.recvfrom(2048)
-                
-                if addr == current_addr:
-                    image_chunk = new_image_chunk
+                image_chunk = client.recv(2048)
 
             print("Image received.")
 
-            duration = float(self.server.recv(2048).decode())
+            duration = float(client.recv(2048).decode())
             self.image_received.emit(data, duration)
+            
+            client.close()
 
     def close(self) -> None:
-        self.server.close()
+        self.image_socket.close()
         print("Socket closed.")
