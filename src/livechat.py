@@ -11,7 +11,7 @@ from .receiver import Receiver
 
 
 class LiveChat(QApplication):
-    def __init__(self):
+    def __init__(self, show_sender=True):
         super().__init__(sys.argv)
         
         app_icon = QtGui.QIcon('assets/icon.png')
@@ -21,8 +21,9 @@ class LiveChat(QApplication):
         self.image_receiver.image_received.connect(self.show_popup, Qt.QueuedConnection)
         self.image_receiver.start()
         
-        self.live_chat_sender = LiveChatWindow()
-        self.live_chat_sender.show()
+        if show_sender:
+            self.live_chat_sender = LiveChatWindow()
+            self.live_chat_sender.show()
 
     def show_popup(self, image_data: bytes, duration: float) -> None:
         popup = Popup(image_data)
