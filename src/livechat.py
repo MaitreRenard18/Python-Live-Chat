@@ -30,6 +30,7 @@ class LiveChat(QApplication):
         
         self.user_register = Register()
         self.user_register.user_registered.connect(self.register_user, Qt.QueuedConnection)
+        self.user_register.start()
         
         # Sender
         if show_sender:
