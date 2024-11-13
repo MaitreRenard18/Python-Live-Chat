@@ -1,5 +1,5 @@
 import os
-import pwd
+import platform
 import socket
 
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -18,9 +18,15 @@ class Register(QThread):
         self.registry_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.registry_socket.bind((self.address, self.port))
         
-        user_id = os.environ.get("USER")
-        user_info = pwd.getpwnam(user_id)
-        self.full_name = user_info.pw_gecos
+        user_id = os.environ.get("USERNAME")
+        if platform.system() == "Linux":
+            import pwd
+            
+            user_id = os.environ.get("USER")
+            user_info = pwd.getpwnam(user_id)
+            self.full_name = user_info.pw_gecos
+        else:
+            self.full_name = user_id
         
     def send_username(self):
         self.registry_socket.sendto(self.full_name.encode(), ("255.255.255.255", self.port))
