@@ -43,7 +43,15 @@ class Popup(QWidget):
             raise Exception("Error loading image")
         
         self.label.setPixmap(image)
+    
+    def get_qmovie_duration(self, qmovie: QMovie) -> float:
+        duration = 0
+        for _ in range(qmovie.frameCount()):
+            duration += qmovie.nextFrameDelay()
+            qmovie.jumpToNextFrame()
         
+        return duration / 1000
+    
     def show_gif(self, image_data: bytes) -> None:
         with tempfile.NamedTemporaryFile(suffix=".gif", delete=False) as gif:
             gif.write(image_data)
@@ -52,14 +60,15 @@ class Popup(QWidget):
         q_movie = QMovie(path)
         self.label.setMovie(q_movie)
         q_movie.start()
-        q_movie.finished.connect(self.hide)
 
     def show(self, duration: float = 5) -> None:
         super().show()
         
-        if not self.is_gif:
-            loop = QEventLoop()
-            QTimer.singleShot(int(1000 * duration), loop.quit) # 1000 ms = 1s
-            loop.exec()
-            
-            self.hide()
+        if self.is_gif:
+            duration = self.get_qmovie_duration(self.label.movie())
+        
+        loop = QEventLoop()
+        QTimer.singleShot(int(1000 * duration), loop.quit) # 1000 ms = 1s
+        loop.exec()
+        
+        self.hide()
