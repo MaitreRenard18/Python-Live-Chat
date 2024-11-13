@@ -4,12 +4,14 @@ import socket
 
 class Sender:
     def __init__(self):
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client = None
     
     def send_image(self, file_path: str, address: str, port: int = 5555, duration: float | int = 5) -> None:
         if not os.path.isfile(file_path):
             print(f"{file_path} does not exist.")
             return
+        
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
         print((address, port))
         self.client.connect((address, port))
@@ -26,7 +28,11 @@ class Sender:
         self.client.send(str(duration).encode())
 
         print(f"Image successfully sent to {address}:{port}.")
-
-    def close(self) -> None:
+        
         self.client.close()
         print("Socket closed.")
+
+    def close(self) -> None:
+        if self.client:
+            self.client.close()
+            print("Socket closed.")
