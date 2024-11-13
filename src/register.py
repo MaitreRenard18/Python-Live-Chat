@@ -36,6 +36,7 @@ class Register(QThread):
         self.registry_socket.sendto((("DISCOVER " if discover else "RESPONSE ") + self.full_name).encode(), ("255.255.255.255", self.port))
     
     def send_disconnect(self):
+        print("Disconnecting...")
         self.registry_socket.sendto(("DISCONNECT " + self.full_name).encode(), ("255.255.255.255", self.port))
     
     def run(self):
@@ -43,6 +44,8 @@ class Register(QThread):
         
         while True:
             data, addr = self.registry_socket.recvfrom(256)
+            print(data.decode())
+            
             try:
                 username = data.decode().split(" ")[1]
             except IndexError:
@@ -59,8 +62,3 @@ class Register(QThread):
                 self.user_disconnected.emit(username)
             
             self.user_registered.emit(username, addr)
-    
-    def close(self):
-        self.send_disconnect()
-        self.registry_socket.close()
-        self.quit()

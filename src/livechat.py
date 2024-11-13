@@ -33,6 +33,8 @@ class LiveChat(QApplication):
         self.user_register.user_disconnected.connect(self.unregister_user, Qt.QueuedConnection)
         self.user_register.start()
         
+        self.aboutToQuit.connect(self.user_register.send_disconnect)
+        
         # Sender
         if show_sender:
             self.live_chat_window = LiveChatWindow(self)
@@ -70,4 +72,4 @@ class LiveChat(QApplication):
 
 if __name__ == "__main__":
     app = LiveChat()
-    app.exec()
+    sys.exit(app.exec())
