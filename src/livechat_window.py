@@ -1,14 +1,14 @@
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QFileDialog, QLabel, QShortcut, QWidget
 
-from .sender import Sender
-
 
 class LiveChatWindow(QWidget):
+    send_image = pyqtSignal(str, float)
+    
     def __init__(self):
         super().__init__()
         
@@ -16,8 +16,6 @@ class LiveChatWindow(QWidget):
         self.setWindowIcon(QtGui.QIcon('assets/icon.png'))
         self.setupUi()
 
-        self.image_sender = Sender()
-        
         self.shortcut = QShortcut(QKeySequence("Ctrl+O"), self)
         self.shortcut.activated.connect(self.on_open)
 
@@ -27,7 +25,7 @@ class LiveChatWindow(QWidget):
         file_path, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Image Files (*.png *.jpg *.jpeg)")
         
         if file_path:
-            self.image_sender.send_image(file_path, duration=self.doubleSpinBox.value())
+            self.send_image.emit(file_path, self.doubleSpinBox.value())
         else:
             print("No file selected.")
     

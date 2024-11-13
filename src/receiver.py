@@ -1,5 +1,4 @@
 import socket
-from random import randint
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -9,36 +8,31 @@ class Receiver(QThread):
     
     def __init__(self, address: str = "0.0.0.0", port: int = 5555):
         super().__init__()
-
         self.address = address
         self.port = port
-        self.addr = (self.address, self.port)
         
-        self.server = socket.socket(type=socket.SOCK_DGRAM)
-        self.server.bind(self.addr)
-        
-        print(f"Socket created with address {self.address} and port {self.port}.")
+        self.image_socket = socket.socket(type=socket.SOCK_STREAM)
+        self.image_socket.bind((self.address, self.port))
+        self.image_socket.listen(10)
     
     def run(self) -> None:
         while True:
-            image_chunk, current_addr = self.server.recvfrom(2048)
+            client, _ = self.image_socket.accept()
+            data = b''
+            
+            while True:
+                image_chunk = client.recv(2048)
+                if b'IMAGE_END' in image_chunk:
+                    parts = image_chunk.split(b'IMAGE_END')
+                    data += parts[0]
+                    duration = float(parts[1].decode().strip())
+                    break
+                else:
+                    data += image_chunk
 
-            if not image_chunk:
-                continue
-
-            data = b""
-            while image_chunk and image_chunk != b'IMAGE_END':
-                data += image_chunk
-                new_image_chunk, addr = self.server.recvfrom(2048)
-                
-                if addr == current_addr:
-                    image_chunk = new_image_chunk
-
-            print("Image received.")
-
-            duration = float(self.server.recv(2048).decode())
             self.image_received.emit(data, duration)
+            client.close()
 
     def close(self) -> None:
-        self.server.close()
+        self.image_socket.close()
         print("Socket closed.")
