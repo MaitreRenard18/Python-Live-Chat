@@ -44,10 +44,10 @@ class Popup(QWidget):
         self.label.setPixmap(image)
         
     def show_gif(self, image_data: bytes):
-        with tempfile.NamedTemporaryFile(suffix=".gif") as gif:
+        with tempfile.NamedTemporaryFile(suffix=".gif", delete=False) as gif:
             gif.write(image_data)
             path = os.path.abspath(gif.name)
         
         q_movie = QMovie(path)
-        
         self.label.setMovie(q_movie)
+        q_movie.start()
