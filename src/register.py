@@ -1,5 +1,6 @@
 import os
 import platform
+import random
 import socket
 
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -15,7 +16,7 @@ class Register(QThread):
         self.address = "0.0.0.0"
         
         self.registry_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.registry_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self.registry_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)      
         self.registry_socket.bind((self.address, self.port))
         
         user_id = os.environ.get("USERNAME")
@@ -26,7 +27,7 @@ class Register(QThread):
             user_info = pwd.getpwnam(user_id)
             self.full_name = user_info.pw_gecos
         else:
-            self.full_name = user_id
+            self.full_name = f"{user_id}#{str(int(random.random() * 10000)).ljust(4, '0')}"
         
         print("Registered as:", self.full_name)
         
