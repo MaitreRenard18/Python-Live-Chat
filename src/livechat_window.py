@@ -19,13 +19,17 @@ class LiveChatWindow(QWidget):
         self.app = app
 
         self.refresh_list_shortcut = QShortcut(QKeySequence("Ctrl+R"), self)
-        self.refresh_list_shortcut.activated.connect(self.refresh)
+        self.refresh_list_shortcut.activated.connect(self.force_refresh)
 
         self.open_image_shortcut = QShortcut(QKeySequence("Ctrl+O"), self)
         self.open_image_shortcut.activated.connect(self.on_open)
 
         self.pushButton.clicked.connect(self.on_open)
-        self.pushButton_2.clicked.connect(self.refresh)
+        self.pushButton_2.clicked.connect(self.force_refresh)
+    
+    def force_refresh(self):
+        self.app.refresh_registry()
+        self.refresh()
     
     def refresh(self):
         self.listWidget.clear()

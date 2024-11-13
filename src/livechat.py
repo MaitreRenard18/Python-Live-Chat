@@ -46,7 +46,11 @@ class LiveChat(QApplication):
     def send_image(self, image_path: str, duration: int = 5) -> None:
         for user in self.live_chat_window.get_selected_users():
             self.image_sender.send_image(image_path, address=self.registry[user][0], duration=duration)
-                                                                                                                                                                                                              
+    
+    def refresh_registry(self) -> None:
+        self.live_chat_window.refresh
+        self.user_register.send_username(discover=True)
+                                                                                                                                             
     def register_user(self, username: str, address: tuple[str, int]) -> None:
         self.registry[username] = address
         self.live_chat_window.refresh()

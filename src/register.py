@@ -60,5 +60,6 @@ class Register(QThread):
                 
             elif data.startswith(b"DISCONNECT"):
                 self.user_disconnected.emit(username)
+                continue
             
             self.user_registered.emit(username, addr)
