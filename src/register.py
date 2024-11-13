@@ -28,6 +28,8 @@ class Register(QThread):
         else:
             self.full_name = user_id
         
+        print("Registered as:", self.full_name)
+        
     def send_username(self):
         self.registry_socket.sendto(self.full_name.encode(), ("255.255.255.255", self.port))
     
