@@ -26,9 +26,9 @@ class Register(QThread):
             
             user_id = os.environ.get("USER")
             user_info = pwd.getpwnam(user_id)
-            self.full_name = user_info.pw_gecos
+            self.full_name = user_info.pw_gecos + ": " + socket.gethostbyname(socket.gethostname())
         else:
-            self.full_name = f"{user_id}#{str(int(random.random() * 10000)).ljust(4, '0')}"
+            self.full_name = user_id + ": " + socket.gethostbyname(socket.gethostname())
         
         print("Registered as:", self.full_name)
         
