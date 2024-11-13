@@ -37,6 +37,8 @@ class LiveChatWindow(QWidget):
         for user in self.app.registry.keys():
             item = QtWidgets.QListWidgetItem(user)
             item.setCheckState(Qt.Unchecked)
+            item.setForeground(QtGui.QColor(255, 255, 255))
+            item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
             self.listWidget.addItem(item)
     
     def get_selected_users(self):
