@@ -1,4 +1,6 @@
 import imghdr
+import os
+import tempfile
 from pathlib import Path
 
 import PyQt5
@@ -42,10 +44,10 @@ class Popup(QWidget):
         self.label.setPixmap(image)
         
     def show_gif(self, image_data: bytes):
-        gif = QMovie()
-        success = gif.loadFromData(image_data)
+        with tempfile.NamedTemporaryFile(suffix=".gif") as gif:
+            gif.write(image_data)
+            path = os.path.abspath(gif.name)
         
-        if not success:
-            raise Exception("Error loading gif")
+        q_movie = QMovie(path)
         
-        self.label.setMovie(gif)
+        self.label.setMovie(q_movie)
