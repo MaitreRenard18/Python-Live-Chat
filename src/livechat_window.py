@@ -34,8 +34,6 @@ class LiveChatWindow(QWidget):
     def refresh(self):
         self.listWidget.clear()
         
-        print("Refreshing list...")
-        print(self.app.registry.keys())
         for user in self.app.registry.keys():
             item = QtWidgets.QListWidgetItem(user)
             item.setCheckState(Qt.Unchecked)

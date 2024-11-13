@@ -44,8 +44,7 @@ class Register(QThread):
         
         while True:
             data, addr = self.registry_socket.recvfrom(256)
-            print(data.decode())
-            
+
             try:
                 username = data.decode().split(" ")[1]
             except IndexError:
