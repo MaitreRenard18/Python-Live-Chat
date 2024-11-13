@@ -18,7 +18,7 @@ class Register(QThread):
         self.registry_socket.bind((self.address, self.port))
         
     def send_username(self):
-        self.registry_socket.sendto(os.getlogin().encode(), ("255.255.255.255", self.port))
+        self.registry_socket.sendto(os.environ.get("USER", "Tom").encode(), ("255.255.255.255", self.port))
     
     def run(self):
         self.send_username()
