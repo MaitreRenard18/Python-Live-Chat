@@ -48,7 +48,7 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>0</height>
+         <height>24</height>
         </size>
        </property>
        <property name="maximumSize">
@@ -127,7 +127,7 @@ background-color: rgb(85, 255, 0);</string>
           </property>
           <property name="font">
            <font>
-            <family>Calibri</family>
+            <family>Yu Gothic UI</family>
             <pointsize>12</pointsize>
             <weight>50</weight>
             <bold>false</bold>
@@ -145,6 +145,97 @@ background-color: rgb(85, 255, 0);</string>
         </item>
        </layout>
       </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>1</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border: 1px solid white;
+border-style: inset;</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Yu Gothic UI</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: white;</string>
+         </property>
+         <property name="text">
+          <string>Connected users</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>16</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>64</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Yu Gothic UI</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+                                        background-color: #1a224d; 
+                                        border: none;
+                                        border-radius: 8px;
+                                        color: #556de5;
+                                      }
+                                      QPushButton:hover {
+                                        color: #f0f0f0;
+                                        background-color: #556de5;
+                                      }</string>
+         </property>
+         <property name="text">
+          <string>Refresh</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QListWidget" name="listWidget">
@@ -171,7 +262,7 @@ background-color: rgb(85, 255, 0);</string>
          </property>
          <property name="font">
           <font>
-           <family>Calibri</family>
+           <family>Yu Gothic UI</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -238,7 +329,7 @@ color: #556de5;
          </property>
          <property name="font">
           <font>
-           <family>Calibri</family>
+           <family>Yu Gothic UI</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>

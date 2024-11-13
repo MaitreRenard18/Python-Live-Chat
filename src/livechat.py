@@ -30,22 +30,35 @@ class LiveChat(QApplication):
         
         self.user_register = Register()
         self.user_register.user_registered.connect(self.register_user, Qt.QueuedConnection)
+        self.user_register.user_disconnected.connect(self.unregister_user, Qt.QueuedConnection)
         self.user_register.start()
+        
+        self.aboutToQuit.connect(self.user_register.send_disconnect)
         
         # Sender
         if show_sender:
-            self.live_chat_sender = LiveChatWindow(self)
-            self.live_chat_sender.show()
+            self.live_chat_window = LiveChatWindow(self)
+            self.live_chat_window.show()
 
             self.image_sender = Sender()
-            self.live_chat_sender.send_image.connect(self.send_image, Qt.QueuedConnection)
+            self.live_chat_window.send_image.connect(self.send_image, Qt.QueuedConnection)
     
     def send_image(self, image_path: str, duration: int = 5) -> None:
-        for address in self.registry.values():
-            self.image_sender.send_image(image_path, address=address[0], duration=duration)
-                                                                                                                                                                                                                                                                                       
+        for user in self.live_chat_window.get_selected_users():
+            self.image_sender.send_image(image_path, address=self.registry[user][0], duration=duration)
+    
+    def refresh_registry(self) -> None:
+        self.registry.clear()
+        self.live_chat_window.refresh()
+        self.user_register.send_username(discover=True)
+                                                                                                                                             
     def register_user(self, username: str, address: tuple[str, int]) -> None:
         self.registry[username] = address
+        self.live_chat_window.refresh()
+    
+    def unregister_user(self, username: str) -> None:
+        self.registry.pop(username)
+        self.live_chat_window.refresh()
     
     def show_popup(self, image_data: bytes, duration: float) -> None:
         try:
@@ -64,4 +77,4 @@ class LiveChat(QApplication):
 
 if __name__ == "__main__":
     app = LiveChat()
-    app.exec()
+    sys.exit(app.exec())

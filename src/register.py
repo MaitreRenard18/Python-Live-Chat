@@ -1,5 +1,6 @@
 import os
 import platform
+import random
 import socket
 
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -7,6 +8,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 class Register(QThread):
     user_registered = pyqtSignal(str, tuple)
+    user_disconnected = pyqtSignal(str)
     
     def __init__(self, port: int = 5556):
         super().__init__()
@@ -15,7 +17,7 @@ class Register(QThread):
         self.address = "0.0.0.0"
         
         self.registry_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.registry_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self.registry_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)      
         self.registry_socket.bind((self.address, self.port))
         
         user_id = os.environ.get("USERNAME")
@@ -24,23 +26,39 @@ class Register(QThread):
             
             user_id = os.environ.get("USER")
             user_info = pwd.getpwnam(user_id)
-            self.full_name = user_info.pw_gecos
+            self.full_name = user_info.pw_gecos + ":" + socket.gethostbyname(socket.gethostname())
         else:
-            self.full_name = user_id
+            self.full_name = user_id + ":" + socket.gethostbyname(socket.gethostname())
         
-    def send_username(self):
-        self.registry_socket.sendto(self.full_name.encode(), ("255.255.255.255", self.port))
+        print("Registered as:", self.full_name)
+        
+    def send_username(self, discover: bool = False):
+        self.registry_socket.sendto((("DISCOVER " if discover else "RESPONSE ") + self.full_name).encode(), ("255.255.255.255", self.port))
+    
+    def send_disconnect(self):
+        print("Disconnecting...")
+        self.registry_socket.sendto(("DISCONNECT " + self.full_name).encode(), ("255.255.255.255", self.port))
     
     def run(self):
-        self.send_username()
+        self.send_username(discover=True)
         
         while True:
-            username, addr = self.registry_socket.recvfrom(256)
+            data, addr = self.registry_socket.recvfrom(256)
+
+            try:
+                username = data.decode().split(" ")[1]
+            except IndexError:
+                print("Invalid format:", data)
+                username = "Guest"
             
-            if username.decode() != self.full_name:
-                self.user_registered.emit(username.decode(), addr)
+            if username == self.full_name:
+                continue
+            
+            if data.startswith(b"DISCOVER"):
                 self.send_username()
-    
-    def close(self):
-        self.registry_socket.close()
-        self.quit()
+                
+            elif data.startswith(b"DISCONNECT"):
+                self.user_disconnected.emit(username)
+                continue
+            
+            self.user_registered.emit(username, addr)
