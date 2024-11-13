@@ -34,7 +34,7 @@ class LiveChat(QApplication):
         
         # Sender
         if show_sender:
-            self.live_chat_sender = LiveChatWindow()
+            self.live_chat_sender = LiveChatWindow(self)
             self.live_chat_sender.show()
 
             self.image_sender = Sender()
