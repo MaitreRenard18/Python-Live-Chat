@@ -41,9 +41,9 @@ class LiveChat(QApplication):
             self.live_chat_sender.send_image.connect(self.send_image, Qt.QueuedConnection)
     
     def send_image(self, image_path: str, duration: int = 5) -> None:
-        for address in self.registry.items():
-            self.image_sender.send_image(image_path, address=address, duration=duration)
-                                                                                                                                                                                                                                                                                                                                                                             
+        for address in self.registry.values():
+            self.image_sender.send_image(image_path, address=address[0], duration=duration)
+                                                                                                                                                                                                                                                                                       
     def register_user(self, username: str, address: tuple[str, int]) -> None:
         self.registry[username] = address
     

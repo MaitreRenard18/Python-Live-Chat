@@ -11,6 +11,7 @@ class Sender:
             print(f"{file_path} does not exist.")
             return
         
+        print((address, port))
         self.client.connect((address, port))
         print(f"Sending {file_path}...")
         
