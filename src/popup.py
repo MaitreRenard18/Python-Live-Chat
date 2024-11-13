@@ -20,10 +20,10 @@ class Popup(QWidget):
         self.label.setScaledContents(True)
         
         image = QPixmap()
-        err = image.loadFromData(image_data)
+        success = image.loadFromData(image_data)
         
-        if not err:
-            print("Error loading image.")
+        if not success:
+            raise Exception("Error loading image")
         
         self.label.setPixmap(image)
 

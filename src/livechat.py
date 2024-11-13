@@ -48,14 +48,18 @@ class LiveChat(QApplication):
         self.registry[username] = address
     
     def show_popup(self, image_data: bytes, duration: float) -> None:
-        popup = Popup(image_data)
-        popup.show()
+        try:
+            popup = Popup(image_data)
+            popup.show()
+            
+            loop = QEventLoop()
+            QTimer.singleShot(int(1000 * duration), loop.quit) # 1000 ms = 1s
+            loop.exec()
+            
+            popup.hide()
         
-        loop = QEventLoop()
-        QTimer.singleShot(int(1000 * duration), loop.quit) # 1000 ms = 1s
-        loop.exec()
-        
-        popup.hide()
+        except Exception as error:
+            print(error)
 
 
 if __name__ == "__main__":
