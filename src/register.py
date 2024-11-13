@@ -29,15 +29,17 @@ class Register(QThread):
             self.full_name = user_id
         
     def send_username(self):
-        self.registry_socket.sendto(os.environ.get("USER", "Tom").encode(), ("255.255.255.255", self.port))
+        self.registry_socket.sendto(self.full_name.encode(), ("255.255.255.255", self.port))
     
     def run(self):
         self.send_username()
         
         while True:
             username, addr = self.registry_socket.recvfrom(256)
-            self.user_registered.emit(username.decode(), addr)
-            self.send_username()
+            
+            if username.decode() != self.full_name:
+                self.user_registered.emit(username.decode(), addr)
+                self.send_username()
     
     def close(self):
         self.registry_socket.close()
