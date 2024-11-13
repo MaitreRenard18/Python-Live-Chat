@@ -8,6 +8,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 class Register(QThread):
     user_registered = pyqtSignal(str, tuple)
+    user_disconnected = pyqtSignal(str)
     
     def __init__(self, port: int = 5556):
         super().__init__()
@@ -31,19 +32,35 @@ class Register(QThread):
         
         print("Registered as:", self.full_name)
         
-    def send_username(self):
-        self.registry_socket.sendto(self.full_name.encode(), ("255.255.255.255", self.port))
+    def send_username(self, discover: bool = False):
+        self.registry_socket.sendto((("DISCOVER " if discover else "RESPONSE ") + self.full_name).encode(), ("255.255.255.255", self.port))
+    
+    def send_disconnect(self):
+        self.registry_socket.sendto(("DISCONNECT " + self.full_name).encode(), ("255.255.255.255", self.port))
     
     def run(self):
-        self.send_username()
+        self.send_username(discover=True)
         
         while True:
-            username, addr = self.registry_socket.recvfrom(256)
+            data, addr = self.registry_socket.recvfrom(256)
+            try:
+                username = data.decode().split(" ")[1]
+            except IndexError:
+                print("Invalid format:", data)
+                username = "Guest"
             
-            if username.decode() != self.full_name:
-                self.user_registered.emit(username.decode(), addr)
+            if username == self.full_name:
+                continue
+            
+            if data.startswith(b"DISCOVER"):
                 self.send_username()
+                
+            elif data.startswith(b"DISCONNECT"):
+                self.user_disconnected.emit(username)
+            
+            self.user_registered.emit(username, addr)
     
     def close(self):
+        self.send_disconnect()
         self.registry_socket.close()
         self.quit()
