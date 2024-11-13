@@ -1,8 +1,9 @@
+import imghdr
 from pathlib import Path
 
 import PyQt5
 import PyQt5.QtCore
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QMovie, QPixmap
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget
 
 
@@ -18,7 +19,20 @@ class Popup(QWidget):
         # Image
         self.label = QLabel(self)
         self.label.setScaledContents(True)
-        
+
+        imghdr.what("", h=image_data)
+        if imghdr.what("", h=image_data) == "gif":
+            self.show_gif(image_data)
+        else:
+            self.show_image(image_data)
+
+        # Resize window
+        screen_size = (0, 0, PyQt5.QtWidgets.QDesktopWidget().screenGeometry().width(), PyQt5.QtWidgets.QDesktopWidget().screenGeometry().height()) 
+
+        self.setGeometry(*screen_size)
+        self.label.setGeometry(*screen_size)
+
+    def show_image(self, image_data: bytes) -> None:
         image = QPixmap()
         success = image.loadFromData(image_data)
         
@@ -26,9 +40,12 @@ class Popup(QWidget):
             raise Exception("Error loading image")
         
         self.label.setPixmap(image)
-
-        # Resize window
-        screen_size = (0, 0, PyQt5.QtWidgets.QDesktopWidget().screenGeometry().width(), PyQt5.QtWidgets.QDesktopWidget().screenGeometry().height()) 
-
-        self.setGeometry(*screen_size)
-        self.label.setGeometry(*screen_size)
+        
+    def show_gif(self, image_data: bytes):
+        gif = QMovie()
+        success = gif.loadFromData(image_data)
+        
+        if not success:
+            raise Exception("Error loading gif")
+        
+        self.label.setMovie(gif)
