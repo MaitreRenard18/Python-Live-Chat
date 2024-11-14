@@ -1,7 +1,6 @@
 import imghdr
 import os
 import tempfile
-from pathlib import Path
 
 import PyQt5
 import PyQt5.QtCore
