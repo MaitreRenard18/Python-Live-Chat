@@ -19,10 +19,6 @@ class LiveChat(QApplication):
         super().__init__(sys.argv)
         
         # App settings
-        app_icon = QtGui.QIcon('assets/icon.png')
-        self.setWindowIcon(app_icon)
-
-        
         if platform.system() == "Windows":
             myappid = 'maitrerenard.livechat.version'
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
