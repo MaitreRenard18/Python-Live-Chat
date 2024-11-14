@@ -23,6 +23,7 @@ class Popup(QWidget):
         self.label = QLabel(self)
         self.label.setScaledContents(True)
 
+        self.gif_path = None
         self.is_gif = imghdr.what("", h=image_data) == "gif"
         if self.is_gif:
             self.show_gif(image_data)
@@ -52,12 +53,12 @@ class Popup(QWidget):
         
         return duration / 1000
     
-    def show_gif(self, image_data: bytes) -> None:
+    def show_gif(self, gif_data: bytes) -> None:
         with tempfile.NamedTemporaryFile(suffix=".gif", delete=False) as gif:
-            gif.write(image_data)
-            path = os.path.abspath(gif.name)
+            gif.write(gif_data)
+            self.gif_path = os.path.abspath(gif.name)
         
-        q_movie = QMovie(path)
+        q_movie = QMovie(self.gif_path)
         self.label.setMovie(q_movie)
         q_movie.start()
 
@@ -71,4 +72,8 @@ class Popup(QWidget):
         QTimer.singleShot(int(1000 * duration), loop.quit) # 1000 ms = 1s
         loop.exec()
         
-        self.hide()
+        if self.is_gif:
+            self.label.setMovie(None)
+            os.remove(self.gif_path) if self.is_gif else None
+        
+        self.close()
