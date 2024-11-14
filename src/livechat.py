@@ -63,13 +63,7 @@ class LiveChat(QApplication):
     def show_popup(self, image_data: bytes, duration: float) -> None:
         try:
             popup = Popup(image_data)
-            popup.show()
-            
-            loop = QEventLoop()
-            QTimer.singleShot(int(1000 * duration), loop.quit) # 1000 ms = 1s
-            loop.exec()
-            
-            popup.hide()
+            popup.show(duration)
         
         except Exception as error:
             print(error)

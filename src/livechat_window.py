@@ -47,7 +47,7 @@ class LiveChatWindow(QWidget):
                 yield self.listWidget.item(i).text()
     
     def on_open(self) -> None:
-        file_path, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Image Files (*.png *.jpg *.jpeg)")
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Image Files (*.png *.jpg *.jpeg, *.gif)")
         
         if file_path:
             self.send_image.emit(file_path, self.doubleSpinBox.value())
