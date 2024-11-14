@@ -6,6 +6,40 @@ on:
       - 'v*'  # Déclenche le workflow lors d'un push avec un tag de version, comme v1.0
 
 jobs:
+  build-windows:
+    runs-on: windows-latest  # Utilise un runner Windows
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # Spécifie la version Python requise
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build executable with PyInstaller (Windows)
+      run: |
+        pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.py
+      shell: pwsh
+
+    - name: Rename executable for Windows
+      run: |
+        ren dist\\main.exe main-windows.exe
+      shell: pwsh
+
+    - name: Upload Windows executable as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: executable-windows
+        path: dist\\main-windows.exe
+      
   build-linux:
     runs-on: ubuntu-latest  # Utilise un runner Ubuntu
 
