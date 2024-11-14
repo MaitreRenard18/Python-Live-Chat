@@ -52,7 +52,9 @@ class LiveChat(QApplication):
     
     def send_image(self, image_path: str, duration: int = 5) -> None:
         for user in self.live_chat_window.get_selected_users():
-            self.image_sender.send_image(image_path, address=self.registry[user][0], duration=duration)
+            address = self.registry[user][0]
+            port = self.registry[user][1]
+            self.image_sender.send_image(image_path, address=address, port=port, duration=duration)
     
     def refresh_registry(self) -> None:
         self.registry.clear()
