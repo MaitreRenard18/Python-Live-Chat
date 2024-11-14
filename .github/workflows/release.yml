@@ -48,7 +48,7 @@ jobs:
       shell: bash
 
     - name: Upload executable as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: executable-${{ matrix.os }}
         path: |
@@ -60,13 +60,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download artifacts for Ubuntu
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: executable-ubuntu-latest
         path: ./release
 
     - name: Download artifacts for Windows
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: executable-windows-latest
         path: ./release
