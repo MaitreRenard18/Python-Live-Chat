@@ -1,6 +1,5 @@
 import os
 import platform
-import random
 import socket
 
 from PyQt5.QtCore import QThread, pyqtSignal

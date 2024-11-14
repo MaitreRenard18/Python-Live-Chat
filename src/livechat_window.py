@@ -1,9 +1,7 @@
-import sys
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QFileDialog, QLabel, QShortcut, QWidget
+from PyQt5.QtWidgets import QFileDialog, QShortcut, QWidget
 
 
 class LiveChatWindow(QWidget):

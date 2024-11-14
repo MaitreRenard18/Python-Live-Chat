@@ -1,3 +1,5 @@
+import ctypes
+import platform
 import sys
 
 from PyQt5 import QtCore, QtGui
@@ -20,6 +22,11 @@ class LiveChat(QApplication):
         app_icon = QtGui.QIcon('assets/icon.png')
         self.setWindowIcon(app_icon)
 
+        
+        if platform.system() == "Windows":
+            myappid = 'maitrerenard.livechat.version'
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        
         # Receiver
         self.image_receiver = Receiver()
         self.image_receiver.image_received.connect(self.show_popup, Qt.QueuedConnection)
@@ -67,8 +74,3 @@ class LiveChat(QApplication):
         
         except Exception as error:
             print(error)
-
-
-if __name__ == "__main__":
-    app = LiveChat()
-    sys.exit(app.exec())
