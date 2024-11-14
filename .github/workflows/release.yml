@@ -1,9 +1,10 @@
 name: Build and Release
 
 on:
+  workflow_dispatch:
   push:
     tags:
-      - 'v*'  # Déclenche le workflow lors d'un push avec un tag de version, comme v1.0
+      - 'v*'
 
 jobs:
   build-windows:
