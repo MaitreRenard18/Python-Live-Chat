@@ -1,15 +1,13 @@
 name: Build and Release
 
 on:
-    workflow_dispatch:  # Lance le workflow lors d'un push avec un tag de version, par exemple v1.0
+  push:
+    tags:
+      - 'v*'  # Déclenche le workflow lors d'un push avec un tag de version, comme v1.0
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]  # Compilation pour Ubuntu et Windows
+  build-windows:
+    runs-on: windows-latest  # Utilise un runner Windows
 
     steps:
     - name: Checkout code
@@ -18,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.10'
+        python-version: '3.x'  # Spécifie la version Python requise
 
     - name: Install dependencies
       run: |
@@ -26,49 +24,71 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
 
-    - name: Build executable with PyInstaller
+    - name: Build executable with PyInstaller (Windows)
       run: |
-        # Condition pour Windows
-        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.pyw
-        # Condition pour Ubuntu
-        elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-          pyinstaller -F --icon="./assets/icon.png" --add-data "./assets/icon.png:assets" ./main.pyw
-        fi
-      shell: bash
+        pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.py
+      shell: pwsh
 
-    - name: Rename executable
+    - name: Rename executable for Windows
       run: |
-        # Renommage du fichier généré pour chaque plateforme
-        if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-          mv dist/main main-linux
-        elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          ren dist\\main.exe main-windows.exe
-        fi
-      shell: bash
+        ren dist\\main.exe main-windows.exe
+      shell: pwsh
 
-    - name: Upload executable as artifact
-      uses: actions/upload-artifact@v4
+    - name: Upload Windows executable as artifact
+      uses: actions/upload-artifact@v3
       with:
-        name: executable-${{ matrix.os }}
-        path: |
-          main-linux
-          main-windows.exe
+        name: executable-windows
+        path: dist\\main-windows.exe
+
+  build-linux:
+    runs-on: ubuntu-latest  # Utilise un runner Ubuntu
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # Spécifie la version Python requise
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build executable with PyInstaller (Linux)
+      run: |
+        pyinstaller -F --icon="./assets/icon.png" --add-data "./assets/icon.png:assets" ./main.py
+      shell: bash
+
+    - name: Rename executable for Linux
+      run: |
+        mv dist/main main-linux
+      shell: bash
+
+    - name: Upload Linux executable as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: executable-linux
+        path: dist/main-linux
 
   release:
-    needs: build
-    runs-on: ubuntu-latest
+    needs: [build-windows, build-linux]  # Attendre que les jobs de compilation se terminent
+    runs-on: ubuntu-latest  # Ce job se déroule sur un runner Ubuntu, car nous utilisons GitHub Actions pour télécharger les artefacts et créer la release.
+
     steps:
-    - name: Download artifacts for Ubuntu
-      uses: actions/download-artifact@v4
+    - name: Download Windows executable artifact
+      uses: actions/download-artifact@v3
       with:
-        name: executable-ubuntu-latest
+        name: executable-windows
         path: ./release
 
-    - name: Download artifacts for Windows
-      uses: actions/download-artifact@v4
+    - name: Download Linux executable artifact
+      uses: actions/download-artifact@v3
       with:
-        name: executable-windows-latest
+        name: executable-linux
         path: ./release
 
     - name: Create GitHub Release
@@ -79,5 +99,5 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ./release/Live-Chat-linux
-          ./release/Live-Chat-windows.exe
+          ./release/main-linux
+          ./release/main-windows.exe
