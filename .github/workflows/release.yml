@@ -30,10 +30,10 @@ jobs:
       run: |
         # Condition pour Windows
         if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.py
+          pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.pyw
         # Condition pour Ubuntu
         elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-          pyinstaller -F --icon="./assets/icon.png" --add-data "./assets/icon.png:assets" ./main.py
+          pyinstaller -F --icon="./assets/icon.png" --add-data "./assets/icon.png:assets" ./main.pyw
         fi
       shell: bash
 
