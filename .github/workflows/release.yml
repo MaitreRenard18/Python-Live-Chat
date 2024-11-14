@@ -1,4 +1,46 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
 jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build executable with PyInstaller (Windows)
+      run: |
+        pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.pyw
+      shell: pwsh
+
+    - name: Rename executable for Windows
+      run: |
+        ren dist\\main.exe main-windows.exe
+      shell: pwsh
+
+    - name: Upload Windows executable as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: executable-windows
+        path: dist\\main-windows.exe
+      
   build-linux:
     runs-on: ubuntu-latest
 
@@ -22,10 +64,6 @@ jobs:
         pyinstaller -F --icon="./assets/icon.png" --add-data "./assets/icon.png:assets" ./main.pyw
       shell: bash
 
-    - name: Verify artifact creation
-      run: ls -la dist/
-      shell: bash
-
     - name: Rename executable for Linux
       run: |
         mv dist/main main-linux
@@ -36,3 +74,31 @@ jobs:
       with:
         name: executable-linux
         path: dist/main-linux
+
+  release:
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Windows executable artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: executable-windows
+        path: ./release
+
+    - name: Download Linux executable artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: executable-linux
+        path: ./release
+
+    - name: Create GitHub Release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        files: |
+          ./release/main-linux
+          ./release/main-windows.exe
