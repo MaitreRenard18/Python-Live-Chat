@@ -56,11 +56,6 @@ jobs:
         mv dist/main main-linux
         chmod +x main-linux
       shell: bash
-    - name: List files and check permissions
-      run: |
-        ls -la
-        ls -la main-linux
-      shell: bash
     - name: Upload Linux executable as artifact
       uses: actions/upload-artifact@v3
       with:
@@ -73,28 +68,24 @@ jobs:
     permissions:
       contents: write
     steps:
-    - name: Create release directory
-      run: mkdir release
-    - name: Download Windows executable artifact
+    - name: Download Windows executable
       uses: actions/download-artifact@v3
       with:
         name: executable-windows
-        path: release
-    - name: Download Linux executable artifact
+    - name: Download Linux executable
       uses: actions/download-artifact@v3
       with:
         name: executable-linux
-        path: release
-    - name: List release directory contents
-      run: |
-        ls -la release/
-      shell: bash
-    - name: Create GitHub Release
-      uses: ncipollo/release-action@v1
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
       with:
-        artifacts: "release/main-windows.exe,release/main-linux"
-        tag: ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
-        generateReleaseNotes: true
+        files: |
+          main-windows.exe
+          main-linux
