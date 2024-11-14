@@ -70,6 +70,8 @@ jobs:
   release:
     needs: [build-windows, build-linux]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Download Windows executable artifact
       uses: actions/download-artifact@v3
