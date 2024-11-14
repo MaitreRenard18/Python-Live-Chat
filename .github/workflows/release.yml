@@ -27,7 +27,7 @@ jobs:
 
     - name: Build executable with PyInstaller (Windows)
       run: |
-        pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.py
+        pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.pyw
       shell: pwsh
 
     - name: Rename executable for Windows
@@ -61,7 +61,7 @@ jobs:
 
     - name: Build executable with PyInstaller (Linux)
       run: |
-        pyinstaller -F --icon="./assets/icon.png" --add-data "./assets/icon.png:assets" ./main.py
+        pyinstaller -F --icon="./assets/icon.png" --add-data "./assets/icon.png:assets" ./main.pyw
       shell: bash
 
     - name: Rename executable for Linux
