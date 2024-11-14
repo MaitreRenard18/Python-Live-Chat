@@ -33,32 +33,32 @@ class Register(QThread):
         print("Registered as:", self.full_name)
         
     def send_username(self, discover: bool = False):
-        self.registry_socket.sendto((("DISCOVER " if discover else "RESPONSE ") + self.full_name).encode(), ("255.255.255.255", self.port))
+        self.registry_socket.sendto((("DISCVR " if discover else "RESPND ") + self.full_name).encode(), ("255.255.255.255", self.port))
     
     def send_disconnect(self):
-        print("Disconnecting...")
-        self.registry_socket.sendto(("DISCONNECT " + self.full_name).encode(), ("255.255.255.255", self.port))
+        self.registry_socket.sendto(("DSCNCT " + self.full_name).encode(), ("255.255.255.255", self.port))
     
     def run(self):
         self.send_username(discover=True)
+        self.user_registered.emit(self.full_name, (socket.gethostbyname(socket.gethostname()), 5555))
         
         while True:
             data, addr = self.registry_socket.recvfrom(256)
 
             try:
-                username = data.decode().split(" ")[1]
+                username = data.decode()[7:]
             except IndexError:
-                print("Invalid format:", data)
-                username = "Guest"
+                print("Invalid username format:", data)
+                continue
             
             if username == self.full_name:
                 continue
             
-            if data.startswith(b"DISCOVER"):
-                self.send_username()
-                
-            elif data.startswith(b"DISCONNECT"):
+            if data.startswith(b"DSCNCT"):
                 self.user_disconnected.emit(username)
                 continue
+            
+            if data.startswith(b"DISCVR"):
+                self.send_username()
             
             self.user_registered.emit(username, addr)
