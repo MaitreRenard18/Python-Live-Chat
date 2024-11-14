@@ -1,0 +1,83 @@
+name: Build and Release
+
+on:
+    workflow_dispatch:  # Lance le workflow lors d'un push avec un tag de version, par exemple v1.0
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]  # Compilation pour Ubuntu et Windows
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build executable with PyInstaller
+      run: |
+        # Condition pour Windows
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          pyinstaller -F --icon=".\\assets\\icon.ico" --add-data ".\\assets\\icon.ico;assets" ./main.py
+        # Condition pour Ubuntu
+        elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+          pyinstaller -F --icon="./assets/icon.png" --add-data "./assets/icon.png:assets" ./main.py
+        fi
+      shell: bash
+
+    - name: Rename executable
+      run: |
+        # Renommage du fichier généré pour chaque plateforme
+        if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+          mv dist/main main-linux
+        elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          ren dist\\main.exe main-windows.exe
+        fi
+      shell: bash
+
+    - name: Upload executable as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: executable-${{ matrix.os }}
+        path: |
+          main-linux
+          main-windows.exe
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifacts for Ubuntu
+      uses: actions/download-artifact@v2
+      with:
+        name: executable-ubuntu-latest
+        path: ./release
+
+    - name: Download artifacts for Windows
+      uses: actions/download-artifact@v2
+      with:
+        name: executable-windows-latest
+        path: ./release
+
+    - name: Create GitHub Release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        files: |
+          ./release/Live-Chat-linux
+          ./release/Live-Chat-windows.exe
