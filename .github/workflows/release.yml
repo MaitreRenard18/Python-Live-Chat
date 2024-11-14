@@ -73,27 +73,28 @@ jobs:
     permissions:
       contents: write
     steps:
+    - name: Create release directory
+      run: mkdir release
     - name: Download Windows executable artifact
       uses: actions/download-artifact@v3
       with:
         name: executable-windows
-        path: ./release
+        path: release
     - name: Download Linux executable artifact
       uses: actions/download-artifact@v3
       with:
         name: executable-linux
-        path: ./release
+        path: release
     - name: List release directory contents
       run: |
-        ls -la ./release
+        ls -la release/
       shell: bash
     - name: Create GitHub Release
       uses: ncipollo/release-action@v1
       with:
+        artifacts: "release/main-windows.exe,release/main-linux"
         tag: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
-        files: |
-          ./release/main-linux
-          ./release/main-windows.exe
+        generateReleaseNotes: true
