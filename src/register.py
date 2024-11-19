@@ -6,14 +6,13 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 
 class Register(QThread):
-    user_registered = pyqtSignal(str, tuple)
-    user_disconnected = pyqtSignal(str)
+    user_registered = pyqtSignal(str, str)
+    user_disconnected = pyqtSignal(str, str)
     
-    def __init__(self, registering_port: int = 5556, image_port: int = 5555):
+    def __init__(self, registering_port: int = 5556):
         super().__init__()
         
         self.registering_port = registering_port
-        self.image_port = image_port
         self.address = "0.0.0.0"
         
         self.registry_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -23,8 +22,8 @@ class Register(QThread):
         self.full_name = self.get_username()
         print(f"Registered as: {self.full_name}")
 
-    def get_address(self) -> tuple[str, int]:
-        return (socket.gethostbyname(socket.gethostname()), self.image_port) 
+    def get_ip(self) -> str:
+        return socket.gethostbyname(socket.gethostname())
     
     def get_username(self) -> str:
         if platform.system() == "Linux":
@@ -35,17 +34,17 @@ class Register(QThread):
         else:
             full_name = os.environ.get("USERNAME")
         
-        return full_name + " " + str(self.get_address())
+        return full_name + " " + str(self.get_ip())
 
     def send_username(self, discover: bool = False):
         self.registry_socket.sendto((("DISCVR " if discover else "RESPND ") + self.full_name).encode(), ("255.255.255.255", self.registering_port))
 
     def send_disconnect(self):
-        self.registry_socket.sendto(("DSCNCT " + self.full_name).encode(), self.get_address())
+        self.registry_socket.sendto(("DSCNCT " + self.full_name).encode(), ("255.255.255.255", self.registering_port))
 
     def run(self):
         self.send_username(discover=True)
-        self.user_registered.emit(self.full_name, self.get_address())
+        self.user_registered.emit(self.full_name, self.get_ip())
         
         while True:
             data, addr = self.registry_socket.recvfrom(256)
@@ -66,4 +65,4 @@ class Register(QThread):
             if data.startswith(b"DISCVR"):
                 self.send_username()
             
-            self.user_registered.emit(username, addr)
+            self.user_registered.emit(username, addr[0])
