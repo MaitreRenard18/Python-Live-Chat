@@ -7,7 +7,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 class Register(QThread):
     user_registered = pyqtSignal(str, str)
-    user_disconnected = pyqtSignal(str, str)
+    user_disconnected = pyqtSignal(str)
     
     def __init__(self, registering_port: int = 5556):
         super().__init__()
