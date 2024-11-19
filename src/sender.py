@@ -9,6 +9,7 @@ class Sender:
             return
         
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print(address, port)
         client.connect((address, port))
         
         print(f"Sending {file_path} to {(address, port)}...")

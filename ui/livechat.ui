@@ -191,7 +191,7 @@ border-style: inset;</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="refresh_button">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -238,7 +238,7 @@ border-style: inset;</string>
       </layout>
      </item>
      <item>
-      <widget class="QListWidget" name="listWidget">
+      <widget class="QListWidget" name="users_list">
        <property name="styleSheet">
         <string notr="true">border: none;</string>
        </property>
@@ -247,7 +247,7 @@ border-style: inset;</string>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QDoubleSpinBox" name="doubleSpinBox">
+        <widget class="QDoubleSpinBox" name="duration_box">
          <property name="minimumSize">
           <size>
            <width>16</width>
@@ -308,7 +308,7 @@ color: #556de5;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="open_button">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>
