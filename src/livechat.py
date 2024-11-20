@@ -45,6 +45,8 @@ class LiveChat(QApplication):
 
             self.image_sender = Sender()
             self.live_chat_window.send_image.connect(self.send_image, Qt.QueuedConnection)
+            
+        self.sender_shown = show_sender
     
     def send_image(self, image_path: str, duration: int = 5) -> None:
         for user in self.live_chat_window.get_selected_users():
@@ -56,16 +58,16 @@ class LiveChat(QApplication):
     
     def refresh_registry(self) -> None:
         self.registry = {self.user_register.get_username(): self.user_register.get_ip()}
-        self.live_chat_window.refresh()
         self.user_register.send_username(discover=True)
-                                                                                                                                             
+        if self.sender_shown: self.live_chat_window.refresh()
+                                                                                                                 
     def register_user(self, username: str, ip: str) -> None:
         self.registry[username] = ip
-        self.live_chat_window.refresh()
+        if self.sender_shown: self.live_chat_window.refresh()
     
     def unregister_user(self, username: str) -> None:
         self.registry.pop(username)
-        self.live_chat_window.refresh()
+        if self.sender_shown: self.live_chat_window.refresh()
     
     def show_popup(self, image_data: bytes, duration: float) -> None:
         try:
