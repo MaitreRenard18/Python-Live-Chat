@@ -17,7 +17,6 @@ from .sender import Sender
 class LiveChat(QApplication):
     def __init__(self, show_sender=True):
         super().__init__(sys.argv)
-        self.setQuitOnLastWindowClosed(False)
         
         # App settings
         if platform.system() == "Windows":
@@ -41,11 +40,14 @@ class LiveChat(QApplication):
         
         # Sender
         if show_sender:
+            self.setQuitOnLastWindowClosed(False)
+            
             self.live_chat_window = LiveChatWindow(self)
             self.live_chat_window.send_image.connect(self.send_image, Qt.QueuedConnection)
             self.live_chat_window.show()
 
             self.image_sender = Sender()
+            
             
         self.sender_shown = show_sender
     
