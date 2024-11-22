@@ -40,14 +40,13 @@ class LiveChat(QApplication):
         
         # Sender
         if show_sender:
-            self.setQuitOnLastWindowClosed(False)
-            
             self.live_chat_window = LiveChatWindow(self)
             self.live_chat_window.send_image.connect(self.send_image, Qt.QueuedConnection)
             self.live_chat_window.show()
 
             self.image_sender = Sender()
-            
+        else:
+            self.setQuitOnLastWindowClosed(False)
             
         self.sender_shown = show_sender
     
