@@ -63,8 +63,8 @@ class LiveChatWindow(QWidget):
         try:
             path = get_file_from_url(self.image_path.toPlainText())
             self.send_image.emit(path, self.duration_box.value())
-        except Exception:
-            print("Invalid URL or file path.")
+        except Exception as e:
+            print("Invalid URL or file path.", e)
             
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
