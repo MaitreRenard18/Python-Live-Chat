@@ -52,7 +52,7 @@ class LiveChatWindow(QWidget):
                 yield self.users_list.item(i).text()
     
     def on_open(self) -> None:
-        file_path, _ = QFileDialog.getOpenFileName(self, caption="Open Image", filter="Image Files (*.png *.jpg *.jpeg *.gif)")
+        file_path, _ = QFileDialog.getOpenFileName(self, caption="Open Image", filter="Image Files (*.png *.jpg *.jpeg *.gif *.mp4)")
         
         if file_path:
             self.image_path.setPlainText(file_path)
@@ -60,7 +60,10 @@ class LiveChatWindow(QWidget):
             print("No file selected.")
             
     def on_send(self):
-        path = get_file_from_url(self.image_path.toPlainText())
-        self.send_image.emit(path, self.duration_box.value())
+        try:
+            path = get_file_from_url(self.image_path.toPlainText())
+            self.send_image.emit(path, self.duration_box.value())
+        except ValueError:
+            print("Invalid URL or file path.")
         
         

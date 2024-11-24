@@ -73,8 +73,8 @@ class LiveChat(QApplication):
     
     def show_popup(self, image_data: bytes, duration: float) -> None:
         try:
-            popup = Popup(image_data)
-            popup.show(duration)
+            popup = Popup(image_data, duration)
+            popup.show_popup()
         
         except Exception as error:
             print(error)
