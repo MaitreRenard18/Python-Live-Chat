@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QFileDialog, QShortcut, QWidget
 
-from .utils import resource_path
+from .utils import get_file_from_url, resource_path
 
 
 class LiveChatWindow(QWidget):
@@ -16,7 +16,7 @@ class LiveChatWindow(QWidget):
     def __init__(self, app):
         super().__init__()
         
-        uic.loadUi(resource_path(resource_path('ui/livechat.ui')), self)
+        uic.loadUi(resource_path(resource_path('ui/livechat V2.ui')), self)
         self.setWindowTitle("Live Chat")
         self.setWindowIcon(QtGui.QIcon(resource_path('assets/icon' + ".ico" if platform.system() == "Windows" else '.png')))
 
@@ -28,8 +28,9 @@ class LiveChatWindow(QWidget):
         self.open_image_shortcut = QShortcut(QKeySequence("Ctrl+O"), self)
         self.open_image_shortcut.activated.connect(self.on_open)
 
-        self.open_button.clicked.connect(self.on_open)
+        self.browse_button.clicked.connect(self.on_open)
         self.refresh_button.clicked.connect(self.force_refresh)
+        self.send_button.clicked.connect(self.on_send)
 
     def force_refresh(self):
         self.app.refresh_registry()
@@ -54,6 +55,12 @@ class LiveChatWindow(QWidget):
         file_path, _ = QFileDialog.getOpenFileName(self, caption="Open Image", filter="Image Files (*.png *.jpg *.jpeg *.gif)")
         
         if file_path:
-            self.send_image.emit(file_path, self.duration_box.value())
+            self.image_path.setPlainText(file_path)
         else:
             print("No file selected.")
+            
+    def on_send(self):
+        path = get_file_from_url(self.image_path.toPlainText())
+        self.send_image.emit(path, self.duration_box.value())
+        
+        
