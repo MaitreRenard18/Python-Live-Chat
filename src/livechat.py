@@ -5,7 +5,7 @@ import sys
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QEventLoop, Qt, QThread, QTimer
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QApplication, QFileDialog, QShortcut, QWidget
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from .livechat_window import LiveChatWindow
 from .popup import Popup
@@ -51,7 +51,17 @@ class LiveChat(QApplication):
         self.sender_shown = show_sender
     
     def send_image(self, image_path: str, duration: int = 5) -> None:
-        for user in self.live_chat_window.get_selected_users():
+        selected_users = list(self.live_chat_window.get_selected_users())
+        
+        if not selected_users:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowIcon(self.live_chat_window.windowIcon())
+            msg.setText("No users selected.")
+            msg.setWindowTitle("Live Chat")
+            msg.exec()
+        
+        for user in selected_users:            
             address = self.registry[user]
             port = self.image_receiver.port
             

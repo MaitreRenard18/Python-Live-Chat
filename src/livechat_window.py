@@ -5,7 +5,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QFileDialog, QShortcut, QWidget
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QShortcut, QWidget
 
 from .utils import get_file_from_url, resource_path
 
@@ -63,7 +63,12 @@ class LiveChatWindow(QWidget):
         try:
             path = get_file_from_url(self.image_path.toPlainText())
             self.send_image.emit(path, self.duration_box.value())
-        except ValueError:
+        except Exception:
             print("Invalid URL or file path.")
-        
-        
+            
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowIcon(self.windowIcon())
+            msg.setText("Invalid URL or file path.")
+            msg.setWindowTitle("Live Chat")
+            msg.exec()
