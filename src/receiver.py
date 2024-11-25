@@ -6,7 +6,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 class Receiver(QThread):
     image_received = pyqtSignal(bytes, float)
     
-    def __init__(self, address: str = "0.0.0.0", port: int = 5555):
+    def __init__(self, address: str = "0.0.0.0", port: int = 5555) -> None:
         super().__init__()
         self.address = address
         self.port = port

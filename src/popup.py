@@ -8,8 +8,6 @@ import PyQt5
 import PyQt5.QtCore
 from PyQt5.QtCore import QEventLoop, QTimer
 from PyQt5.QtGui import QMovie, QPixmap
-from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import QLabel, QWidget
 
 
@@ -70,10 +68,11 @@ class Popup(QWidget):
         
         q_movie = QMovie(self.media_path)
         self.label.setMovie(q_movie)
-        self.duration = self.get_qmovie_duration(q_movie)
+        self.duration = Popup.get_qmovie_duration(q_movie)
         q_movie.start()
     
-    def get_qmovie_duration(self, qmovie: QMovie) -> float:
+    @staticmethod
+    def get_qmovie_duration(qmovie: QMovie) -> float:
         duration = 0
         for _ in range(qmovie.frameCount()):
             duration += qmovie.nextFrameDelay()

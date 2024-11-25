@@ -4,23 +4,24 @@ import socket
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
+BROADCAST_ADDRESS = "255.255.255.255"
+
 
 class Register(QThread):
     user_registered = pyqtSignal(str, str)
     user_disconnected = pyqtSignal(str)
     
-    def __init__(self, registering_port: int = 5556):
+    def __init__(self, registering_port: int = 5556) -> None:
         super().__init__()
         
         self.registering_port = registering_port
-        self.address = "0.0.0.0"
-        
+
         self.registry_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.registry_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)      
-        self.registry_socket.bind((self.address, self.registering_port))
+        self.registry_socket.bind(("0.0.0.0", self.registering_port))
         
-        self.full_name = self.get_username()
-        print(f"Registered as: {self.full_name}")
+        self.username = self.get_username()
+        print(f"Registered as: {self.username}")
 
     def get_ip(self) -> str:
         return socket.gethostbyname(socket.gethostname())
@@ -36,15 +37,15 @@ class Register(QThread):
         
         return full_name + " " + str(self.get_ip())
 
-    def send_username(self, discover: bool = False):
-        self.registry_socket.sendto((("DISCVR " if discover else "RESPND ") + self.full_name).encode(), ("255.255.255.255", self.registering_port))
+    def send_username(self, discover: bool = False) -> None:
+        self.registry_socket.sendto((("DISCVR " if discover else "RESPND ") + self.username).encode(), (BROADCAST_ADDRESS, self.registering_port))
 
-    def send_disconnect(self):
-        self.registry_socket.sendto(("DSCNCT " + self.full_name).encode(), ("255.255.255.255", self.registering_port))
+    def send_disconnect(self) -> None:
+        self.registry_socket.sendto(("DSCNCT " + self.username).encode(), (BROADCAST_ADDRESS, self.registering_port))
 
-    def run(self):
+    def run(self) -> None:
         self.send_username(discover=True)
-        self.user_registered.emit(self.full_name, self.get_ip())
+        self.user_registered.emit(self.username, self.get_ip())
         
         while True:
             data, addr = self.registry_socket.recvfrom(256)
@@ -55,7 +56,7 @@ class Register(QThread):
                 print(f"Invalid username format: {data}")
                 continue
             
-            if username == self.full_name:
+            if username == self.username:
                 continue
             
             if data.startswith(b"DSCNCT"):
