@@ -249,7 +249,7 @@ QPushButton:hover {
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>sync.png</normaloff>sync.png</iconset>
+              <normaloff>icons/sync.png</normaloff>sync.png</iconset>
             </property>
            </widget>
           </item>
@@ -362,7 +362,7 @@ QPushButton:hover {
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>folder_open.png</normaloff>folder_open.png</iconset>
+             <normaloff>icons/folder_open.png</normaloff>folder_open.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -469,7 +469,7 @@ QPushButton:hover {
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>send.png</normaloff>send.png</iconset>
+             <normaloff>icons/send.png</normaloff>send.png</iconset>
            </property>
           </widget>
          </item>

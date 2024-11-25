@@ -25,4 +25,4 @@ $ python run.pyw
 * The image will be sent to all computers running the script on the same network.
 
 ## Screenshots
-![image](assets/screenshot_0.png)
+![image](assets/screenshots/screenshot_0.png)
