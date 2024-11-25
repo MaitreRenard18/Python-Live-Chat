@@ -17,7 +17,7 @@ class LiveChatWindow(QWidget):
     def __init__(self, app):
         super().__init__()
         
-        uic.loadUi(resource_path(resource_path('ui/livechat V2.ui')), self)
+        uic.loadUi(resource_path(resource_path('ui/livechat.ui')), self)
         self.setWindowTitle("Live Chat")
         self.setWindowIcon(QtGui.QIcon(resource_path('assets/icon' + ".ico" if platform.system() == "Windows" else '.png')))
 
@@ -53,7 +53,7 @@ class LiveChatWindow(QWidget):
                 yield self.users_list.item(i).text()
     
     def on_open(self) -> None:
-        file_path, _ = QFileDialog.getOpenFileName(self, caption="Open Image", filter="Image Files (*.png *.jpg *.jpeg *.gif *.mp4)")
+        file_path, _ = QFileDialog.getOpenFileName(self, caption="Open Image", filter="Image Files (*.png *.jpg *.jpeg *.gif)")
         
         if file_path:
             self.image_path.setPlainText(file_path)
