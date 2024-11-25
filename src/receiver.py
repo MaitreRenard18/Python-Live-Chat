@@ -20,12 +20,16 @@ class Receiver(QThread):
             client, _ = self.image_socket.accept()
             data = b''
             
-            image_chunk = client.recv(2048)
-            while not image_chunk.startswith(b'IMAGE_END'):
-                data += image_chunk
+            while True:
                 image_chunk = client.recv(2048)
-            
-            duration = float(image_chunk[9:].decode().strip())
+                if b'IMAGE_END' in image_chunk:
+                    parts = image_chunk.split(b'IMAGE_END')
+                    data += parts[0]
+                    duration = float(parts[1].decode().strip())
+                    break
+                else:
+                    data += image_chunk
+
             self.image_received.emit(data, duration)
             client.close()
 
