@@ -1,3 +1,4 @@
+import imghdr
 import os
 import platform
 import sys
@@ -62,7 +63,12 @@ class LiveChatWindow(QWidget):
     def on_send(self):
         try:
             path = get_file_from_url(self.image_path.toPlainText())
+            
+            if not imghdr.what(path):
+                raise Exception("Unsupported media type")
+            
             self.send_image.emit(path, self.duration_box.value())
+
         except Exception as e:
             print("Invalid URL or file path.", e)
             
@@ -70,5 +76,6 @@ class LiveChatWindow(QWidget):
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowIcon(self.windowIcon())
             msg.setText("Invalid URL or file path.")
+            msg.setInformativeText(str(e))
             msg.setWindowTitle("Live Chat")
             msg.exec()
