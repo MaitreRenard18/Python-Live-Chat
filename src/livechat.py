@@ -2,10 +2,8 @@ import ctypes
 import platform
 import sys
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QEventLoop, Qt, QThread, QTimer
-from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QApplication, QFileDialog, QShortcut, QWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from .livechat_window import LiveChatWindow
 from .popup import Popup
@@ -40,8 +38,9 @@ class LiveChat(QApplication):
         
         # Sender
         if show_sender:
-            self.live_chat_window = LiveChatWindow(self)
+            self.live_chat_window = LiveChatWindow()
             self.live_chat_window.send_image.connect(self.send_image, Qt.QueuedConnection)
+            self.live_chat_window.refresh_registry.connect(self.refresh_registry, Qt.QueuedConnection)
             self.live_chat_window.show()
 
             self.image_sender = Sender()
@@ -51,7 +50,17 @@ class LiveChat(QApplication):
         self.sender_shown = show_sender
     
     def send_image(self, image_path: str, duration: int = 5) -> None:
-        for user in self.live_chat_window.get_selected_users():
+        selected_users = self.live_chat_window.get_selected_users()
+        
+        if not selected_users:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowIcon(self.live_chat_window.windowIcon())
+            msg.setText("No users selected.")
+            msg.setWindowTitle("Live Chat")
+            msg.exec()
+        
+        for user in selected_users:            
             address = self.registry[user]
             port = self.image_receiver.port
             
@@ -61,20 +70,20 @@ class LiveChat(QApplication):
     def refresh_registry(self) -> None:
         self.registry = {self.user_register.get_username(): self.user_register.get_ip()}
         self.user_register.send_username(discover=True)
-        if self.sender_shown: self.live_chat_window.refresh()
+        if self.sender_shown: self.live_chat_window.refresh_ui(self.registry)
                                                                                                                  
     def register_user(self, username: str, ip: str) -> None:
         self.registry[username] = ip
-        if self.sender_shown: self.live_chat_window.refresh()
+        if self.sender_shown: self.live_chat_window.refresh_ui(self.registry)
     
     def unregister_user(self, username: str) -> None:
         self.registry.pop(username)
-        if self.sender_shown: self.live_chat_window.refresh()
+        if self.sender_shown: self.live_chat_window.refresh_ui(self.registry)
     
     def show_popup(self, image_data: bytes, duration: float) -> None:
         try:
-            popup = Popup(image_data)
-            popup.show(duration)
+            popup = Popup(image_data, duration)
+            popup.show_popup()
         
         except Exception as error:
             print(error)
