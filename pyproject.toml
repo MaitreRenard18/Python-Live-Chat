@@ -16,7 +16,6 @@ classifiers = [
     "Topic :: Communications :: Chat",
     "Natural Language :: English",
 ]
-
 dependencies = [
     "PyQt5==5.15.11",
     "PyQt5-Qt5==5.15.2",
@@ -39,8 +38,8 @@ include = [
     "LICENSE",
     "README.md",
     "livechat/*.py",
-    "ui/*.ui",
-    "ui/icons/*.png",
-    "assets/icons/*.ico",
-    "assets/screenshots/*.png",
+    "livechat/ui/*.ui",
+    "livechat/ui/icons/*.png",
+    "livechat/assets/icons/*.ico",
+    "livechat/assets/screenshots/*.png",
 ]
