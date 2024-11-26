@@ -87,3 +87,22 @@ class LiveChat(QApplication):
         
         except Exception as error:
             print(error)
+
+
+def main() -> None:
+    show_sender = True
+    if len(sys.argv) > 1:
+        match sys.argv[1].lower():
+            case 'true':
+                show_sender = True
+            case 'false':
+                show_sender = False
+            case _:
+                print("Invalid argument. Usage: livechat [show_sender]")
+                sys.exit(1)
+    
+    app = LiveChat(show_sender)
+    app.exec()
+
+if __name__ == "__main__":
+    main()

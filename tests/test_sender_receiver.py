@@ -3,8 +3,8 @@ from urllib import request
 
 import pytest
 
-from src import Receiver, Sender
-from src.livechat_window import LiveChatWindow
+from livechat import Receiver, Sender
+from livechat.livechat_window import LiveChatWindow
 
 IP = socket.gethostbyname(socket.gethostname())
 
