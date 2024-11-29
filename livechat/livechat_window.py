@@ -18,7 +18,7 @@ class LiveChatWindow(QWidget):
     def __init__(self) -> None:
         super().__init__()
         
-        uic.loadUi(LiveChatWindow.resource_path('ui/livechat.ui'), self)
+        uic.loadUi(LiveChatWindow.resource_path('livechat/ui/livechat.ui'), self)
         self.setWindowTitle("Live Chat")
         self.setWindowIcon(QtGui.QIcon(LiveChatWindow.resource_path('assets/icons/icon' + ".ico" if platform.system() == "Windows" else '.png')))
 
