@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ## Screenshots  
 
-![Screenshot of Python Live Chat](assets/screenshots/screenshot_0.png)  
+![Screenshot of Python Live Chat]([assets/screenshots/screenshot_0.png](https://github.com/MaitreRenard18/Python-Live-Chat/blob/master/livechat/assets/screenshots/screenshot_0.png))  
 
 ---
 
